@@ -2,16 +2,25 @@ pipeline {
     agent any
 
     stages {
-        stage('AWS s3 upload') {
-            steps {
+            stage('Lint HTML') {
+                steps {
 
-                withAWS(region:'us-west-2',credentials:'aws-static') {
-                s3Upload(file:'index.html', bucket:'nannabat-prj-4');
-            }
+                    tidy -q -e *.html
 
 
 
-            }
+                }
         }
+            stage('Upload to AWS') {
+                steps {
+
+                    withAWS(region:'us-west-2',credentials:'aws-static') {
+                    s3Upload(file:'index.html', bucket:'nannabat-prj-4');
+                }
+
+
+
+                }
+            }
     }
 }
